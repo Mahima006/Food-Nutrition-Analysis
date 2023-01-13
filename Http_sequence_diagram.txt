@@ -1,0 +1,28 @@
+title Food Recipe and Nutrition Analysis
+
+participant User
+participant Server
+participant Food Recipe API
+participant Food Nutrition Analysis API
+
+User->(1)Server:Browser requests "/" (root of our site)
+Server->(1)User: HTTP 200 OK + text.html
+User->(1)Server: HTTP GET:/search? word = coffee
+
+Server->(1)Food Recipe API: 302 GET /api/recipes/v2 HTTP 1.1 Host api.edamam.com\n type=public q=coffee +{ app_id, app_key}
+
+Food Recipe API->(1)Server:200 OK Search results in JSON
+
+Server->(1)Food Nutrition Analysis API: 302 GET /api/nutrition-data HTTP 1.1 Host api.edamam.com + {app_id, app_key} + nutrition-type=logging+ingr="coffee"
+
+Food Nutrition Analysis API->(1)Server: 200 OK Search results in JSON
+
+
+Server->(1)Food Recipe API: Secondary requests (parse JSON) label +ingredients+mealType\n+cuisineType+dishType
+Food Recipe API ->(1)Server: results 
+
+Server->(1)Food Nutrition Analysis API:Secondary requests (parse JSON) calories +totalWeight + dietLabels + cautions + healthLabels+ energy(KCAL) + fat +fasat\n + sugar + cholestrol +calcium + magnesium + potassium 
+
+Food Nutrition Analysis API->(1)Server: results 
+
+Server->(1)User: 200 OK displays text result 
